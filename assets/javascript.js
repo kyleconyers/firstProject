@@ -4,7 +4,12 @@ var states = ['Alabama','Alaska','American Samoa','Arizona','Arkansas','Californ
 // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
 var map = new Datamap({
     element: document.getElementById('container'),
-    scope: 'usa'
+    scope: 'usa',
+    done: function(datamap) {
+        datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
+            alert(geography.properties.name);
+        });
+    }
 });
 
 $("#submit-button").on("click", function () {
@@ -43,4 +48,3 @@ function display(data) {
     newRow.attr("id", newKey);
     $("tbody").append(newRow);
 }
-

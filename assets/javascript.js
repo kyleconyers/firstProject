@@ -7,7 +7,7 @@ var map = new Datamap({
     scope: 'usa',
     done: function(datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function(geography) {
-            alert(geography.properties.name);
+            console.log(geography.properties.name);
         });
     }
 });

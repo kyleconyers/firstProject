@@ -5,10 +5,10 @@
     height: 400px;
 }
 
-<<<<<<< HEAD
 .bar-chart {
     background-color: #C7D9D9;
-=======
+}
+
 .display-4 {
     font-size: 2.5rem;
     font-weight: 300;
@@ -17,5 +17,4 @@
 
 .jumbotron {
     padding: 1rem 0rem;
->>>>>>> 744d1ff654992780e72f10f5b9111de2b1dcc24a
 }

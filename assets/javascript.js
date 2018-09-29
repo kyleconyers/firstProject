@@ -2,7 +2,6 @@ var state;
 var year;
 var states;
 
-<<<<<<< HEAD
 // D3 CHART VARIABLES
 
 function createBarGraph(data) {
@@ -35,11 +34,10 @@ function createBarGraph(data) {
         });
 };
 
-=======
-function getFipsCodes(){
-    //TODO return an object with state abbrv as key and fips code as value
-}
->>>>>>> 952f4133fe84ec1a19adbc127fafea88e0b9db3f
+// function getFipsCodes(){
+//     //TODO return an object with state abbrv as key and fips code as value
+// }
+
 // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
 var map = new Datamap({
     element: document.getElementById('container'),
@@ -48,28 +46,28 @@ var map = new Datamap({
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             console.log(geography.id);
             state = geography.id;
-            
+            var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
             
             //
 
 
 
-            var fipsCodes = getFipsCodes();
-            var stateFips = fipsCodes[state];
-            var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
-            var yearNums = [1, 2, 3, 4, 5, 6, 7];
-            var popByYear = {};
-            yearNums.forEach(function(year){
-                var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
-                $.ajax({
-                    url: popQueryURL,
-                    method: "GET"
-                }).then(function(response){
-                    popByYear[2006 + year] = response[1][0];
-                });
+            // var fipsCodes = getFipsCodes();
+            // var stateFips = fipsCodes[state];
 
-            })
-            var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
+            // var yearNums = [1, 2, 3, 4, 5, 6, 7];
+            // var popByYear = {};
+            // yearNums.forEach(function(year){
+            //     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
+            //     $.ajax({
+            //         url: popQueryURL,
+            //         method: "GET"
+            //     }).then(function(response){
+            //         popByYear[2006 + year] = response[1][0];
+            //     });
+
+            // })
+            // var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
            
            
             $.ajax({
@@ -139,19 +137,19 @@ $("#submit-button").on("click", function () {
             });    
 })
 
-var url = "http://api.datausa.io/api/?show=geo&sumlevel=state&required=avg_wage";
+// var url = "http://api.datausa.io/api/?show=geo&sumlevel=state&required=avg_wage";
 
-d3.json(url, function(json) {
+// d3.json(url, function(json) {
 
-  var data = json.data.map(function(data){
-      console.log(data)
-    return json.headers.reduce(function(obj, header, i){
-      obj[header] = data[i];
-      return obj;
-    }, {});
-  });
+// //   var data = json.data.map(function(data){
+// //       console.log(data)
+// //     return json.headers.reduce(function(obj, header, i){
+// //       obj[header] = data[i];
+// //       return obj;
+// //     }, {});
+// //   });
 
-});
+// });
 function display(data) {
     var newRow = $("<tr>");
     var newTrainName = $("<td>").text(data.val().firebaseTrain);

@@ -59,7 +59,8 @@ var map = new Datamap({
                         $("tbody").append(newRow);
                     });
                 });
-                createBarGraph([80, 100, 56, 120, 180, 30, 40, 120, 160]);
+                var carbonEmissions = [80, 100, 56, 120, 180, 30, 40, 120, 160];
+                createBarGraph(carbonEmissions);
         });
     }
 });

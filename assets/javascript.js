@@ -1,6 +1,14 @@
 var state;
 var year;
 var states;
+var stateCarbonEmissionsByYear = [];
+
+// Function to empty any array
+function emptyArray (arr) {
+    arr.length = 0;
+    console.log("Working");
+    console.log(stateCarbonEmissionsByYear);
+}
 
 var NationalCarbonEmissionsByYear = [] // for 2007 - 2014
 var NationalPopulationByYear = [] // for 2007 - 2014
@@ -42,6 +50,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     scope: 'usa',
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
+            emptyArray(stateCarbonEmissionsByYear);
             console.log(geography.id);
             state = geography.id;
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
@@ -85,6 +94,8 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                         var year = $("<td>").text(results[index][0]);
                         newRow.append(carbonEmission, year);
                         $("tbody").append(newRow);
+                        stateCarbonEmissionsByYear.push(value[1]);
+                        return index < 7;
                     });
                 });
                 var carbonEmissions = [80, 100, 56, 120, 180, 30, 40, 120, 160];

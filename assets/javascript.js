@@ -1,6 +1,14 @@
 var state;
 var year;
 var states;
+var stateCarbonEmissionsByYear = [];
+
+// Function to empty any array
+function emptyArray (arr) {
+    arr.length = 0;
+    console.log("Working");
+    console.log(stateCarbonEmissionsByYear);
+}
 
 // D3 CHART VARIABLES
 
@@ -44,14 +52,11 @@ var map = new Datamap({
     scope: 'usa',
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
+            emptyArray(stateCarbonEmissionsByYear);
             console.log(geography.id);
             state = geography.id;
             var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
             
-            //
-
-
-
             // var fipsCodes = getFipsCodes();
             // var stateFips = fipsCodes[state];
 
@@ -71,14 +76,12 @@ var map = new Datamap({
            
            
             $.ajax({
-
-
                 url: queryURL,
                 method: "GET"
             })
                 .then(function (response) {
                     var results = response.series[0].data;
-                     console.log(results);
+                    //  console.log(results);
                     $.each(results, function (index, value) {
                         console.log(index + ": " + value);
                         var newRow = $("<tr>");
@@ -87,6 +90,8 @@ var map = new Datamap({
                         var year = $("<td>").text(results[index][0]);
                         newRow.append(carbonEmission, year);
                         $("tbody").append(newRow);
+                        stateCarbonEmissionsByYear.push(value[1]);
+                        return index < 7;
                     });
                 });
                 var carbonEmissions = [80, 100, 56, 120, 180, 30, 40, 120, 160];

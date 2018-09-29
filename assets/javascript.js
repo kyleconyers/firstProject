@@ -55,8 +55,8 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             state = geography.id;
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
-            var stateQueryURL = "http://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
-            var nationalQueryURL = "http://api.eia.gov/category/?api_key=" + api_key + "&category_id=2251604";
+            var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
+            var nationalQueryURL = "https://api.eia.gov/category/?api_key=" + api_key + "&category_id=2251604";
             //
 
 
@@ -117,7 +117,7 @@ $("#submit-button").on("click", function () {
     event.preventDefault();
     state = $("#state").val().trim();
     // year = $("#year").val().trim();
-    var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
+    var queryURL = "https://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
     var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
 
     $.ajax({

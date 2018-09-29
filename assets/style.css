@@ -4,3 +4,13 @@
     width: 80%; 
     height: 400px;
 }
+
+.display-4 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+}
+
+.jumbotron {
+    padding: 1rem 0rem;
+}

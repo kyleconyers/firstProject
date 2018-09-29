@@ -10,8 +10,10 @@ function emptyArray (arr) {
     console.log(stateCarbonEmissionsByYear);
 }
 
-// D3 CHART VARIABLES
+var NationalCarbonEmissionsByYear = [] // for 2007 - 2014
+var NationalPopulationByYear = [] // for 2007 - 2014
 
+// D3 BAR CHART CONSTRUCTOR
 function createBarGraph(data) {
     var svgWidth = 500;
     var svgHeight = 300;
@@ -42,12 +44,8 @@ function createBarGraph(data) {
         });
 };
 
-// function getFipsCodes(){
-//     //TODO return an object with state abbrv as key and fips code as value
-// }
-
-// INITIALIZES THE MAP OF THE USA ON TO THE PAGE
-var map = new Datamap({
+// CREATE USA MAP WITH CLICKABLE STATES, CONTAINS EVENT HANDLER THAT TRIGGERS API CALLS
+var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     element: document.getElementById('container'),
     scope: 'usa',
     done: function (datamap) {
@@ -55,8 +53,14 @@ var map = new Datamap({
             emptyArray(stateCarbonEmissionsByYear);
             console.log(geography.id);
             state = geography.id;
-            var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
-            
+            // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
+            var api_key = "08e47fd145ef2607fce2a1442928469e";
+            var stateQueryURL = "http://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
+            var nationalQueryURL = "http://api.eia.gov/category/?api_key=" + api_key + "&category_id=2251604";
+            //
+
+
+
             // var fipsCodes = getFipsCodes();
             // var stateFips = fipsCodes[state];
 
@@ -76,12 +80,12 @@ var map = new Datamap({
            
            
             $.ajax({
-                url: queryURL,
+                url: stateQueryURL,
                 method: "GET"
             })
                 .then(function (response) {
                     var results = response.series[0].data;
-                    //  console.log(results);
+                    console.log(results);
                     $.each(results, function (index, value) {
                         console.log(index + ": " + value);
                         var newRow = $("<tr>");
@@ -96,6 +100,15 @@ var map = new Datamap({
                 });
                 var carbonEmissions = [80, 100, 56, 120, 180, 30, 40, 120, 160];
                 createBarGraph(carbonEmissions);
+
+                $.ajax({
+                    url: nationalQueryURL,
+                    method: "GET"
+                })
+                    .then(function (response) {
+                        
+                        console.log(response);
+                    })
         });
     }
 });

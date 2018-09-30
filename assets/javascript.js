@@ -54,7 +54,7 @@ var states = [
     ['Wisconsin', 'WI'],
     ['Wyoming', 'WY'],
 ];
-var stateCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
+var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
 
 // Function to empty any array
@@ -105,6 +105,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             emptyArray(stateCarbonEmissionsByYear);
+            nationalCarbonEmissionsByYear = [0,0,0,0,0,0,0,0];
             console.log(geography.id);
             state = geography.id;
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php

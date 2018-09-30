@@ -2,6 +2,7 @@ var state;
 var year;
 var states;
 
+
 // D3 CHART VARIABLES
 
 function createBarGraph(data) {
@@ -48,13 +49,13 @@ var map = new Datamap({
             state = geography.id;
             var queryURL = "http://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
             
-            //
+           
 
 
+            //BEGIN POPULATION CODE--Kyle
 
             // var fipsCodes = getFipsCodes();
             // var stateFips = fipsCodes[state];
-
             // var yearNums = [1, 2, 3, 4, 5, 6, 7];
             // var popByYear = {};
             // yearNums.forEach(function(year){
@@ -163,3 +164,47 @@ function display(data) {
     newRow.attr("id", newKey);
     $("tbody").append(newRow);
 }
+// BEGIN POPULATION CODE--Kyle
+
+            // var fipsCodes = getFipsCodes();
+            // var stateFips = fipsCodes[state];
+            var yearNums = [1, 2, 3, 4, 5, 6, 7];
+            var popByYear = {};
+            
+            // var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
+
+            yearNums.forEach(function(year){
+                var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + "&DATE=" + year;
+                $.ajax({
+                  url: popQueryURL,
+                  method: "GET"
+                 }).then(function(response){
+                     popByYear[2006 + year] = response[1][0];
+                    console.log(popQueryURL)
+                    console.log(response)
+                 });
+        
+                 })
+
+      
+
+// var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
+// console.log(queryURLTwo.data)
+
+
+// var yearNums = [1, 2, 3, 4, 5, 6, 7];
+// var popByYear = {};
+
+// function testajax(){
+// var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + "&DATE=" + year;   
+//  $.ajax({
+//         url: popQueryURL,
+//         method: "GET"
+//        }).then(function(response){
+//            popByYear[2006 + year] = response[1][0];
+//           console.log(response)
+//        });
+
+//        }
+
+   

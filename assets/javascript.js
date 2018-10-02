@@ -150,7 +150,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                         // TODO check to see if the year is a key in popByYear, append it if it exists, otherwise append an empty one
                         var year = $("<td>").text(results[index][0]);
                         newRow.append(carbonEmission, year);
-                        $("tbody").append(newRow);
+                        $("#state-data > tbody").append(newRow);
                         stateCarbonEmissionsByYear.push(value[1]);
                         return index < 7;
                     });

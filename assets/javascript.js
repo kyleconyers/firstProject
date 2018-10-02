@@ -102,6 +102,7 @@ function createBarGraph(data) {
 var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     element: document.getElementById('container'),
     scope: 'usa',
+    responsive: true,
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             emptyArray(stateCarbonEmissionsByYear);
@@ -179,6 +180,11 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     }
 });
 
+////// KH // Sets the size of the map responsive to the browser window
+$(window).on('resize', function() {
+    map.resize();
+});
+ 
 $("#submit-button").on("click", function () {
     event.preventDefault();
     state = $("#state").val().trim();

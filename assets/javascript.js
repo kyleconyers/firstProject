@@ -1,17 +1,71 @@
 var state;
 var year;
-var states;
+var states = [
+    ['Arizona', 'AZ'],
+    ['Alabama', 'AL'],
+    ['Alaska', 'AK'],
+    ['Arizona', 'AZ'],
+    ['Arkansas', 'AR'],
+    ['California', 'CA'],
+    ['Colorado', 'CO'],
+    ['Connecticut', 'CT'],
+    ['Delaware', 'DE'],
+    ['Florida', 'FL'],
+    ['Georgia', 'GA'],
+    ['Hawaii', 'HI'],
+    ['Idaho', 'ID'],
+    ['Illinois', 'IL'],
+    ['Indiana', 'IN'],
+    ['Iowa', 'IA'],
+    ['Kansas', 'KS'],
+    ['Kentucky', 'KY'],
+    ['Kentucky', 'KY'],
+    ['Louisiana', 'LA'],
+    ['Maine', 'ME'],
+    ['Maryland', 'MD'],
+    ['Massachusetts', 'MA'],
+    ['Michigan', 'MI'],
+    ['Minnesota', 'MN'],
+    ['Mississippi', 'MS'],
+    ['Missouri', 'MO'],
+    ['Montana', 'MT'],
+    ['Nebraska', 'NE'],
+    ['Nevada', 'NV'],
+    ['New Hampshire', 'NH'],
+    ['New Jersey', 'NJ'],
+    ['New Mexico', 'NM'],
+    ['New York', 'NY'],
+    ['North Carolina', 'NC'],
+    ['North Dakota', 'ND'],
+    ['Ohio', 'OH'],
+    ['Oklahoma', 'OK'],
+    ['Oregon', 'OR'],
+    ['Pennsylvania', 'PA'],
+    ['Rhode Island', 'RI'],
+    ['South Carolina', 'SC'],
+    ['South Dakota', 'SD'],
+    ['Tennessee', 'TN'],
+    ['Texas', 'TX'],
+    ['Utah', 'UT'],
+    ['Vermont', 'VT'],
+    ['Virginia', 'VA'],
+    ['Washington', 'WA'],
+    ['West Virginia', 'WV'],
+    ['Wisconsin', 'WI'],
+    ['Wyoming', 'WY'],
+];
 var stateCarbonEmissionsByYear = [];
+var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
 
 // Function to empty any array
-function emptyArray (arr) {
+function emptyArray(arr) {
     arr.length = 0;
     console.log("Working");
     console.log(stateCarbonEmissionsByYear);
 }
 
-var NationalCarbonEmissionsByYear = [] // for 2007 - 2014
-var NationalPopulationByYear = [] // for 2007 - 2014
+var nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0]; // for 2007 - 2014
+var nationalPopulationByYear = []; // for 2007 - 2014
 
 // D3 BAR CHART CONSTRUCTOR
 function createBarGraph(data) {
@@ -51,12 +105,12 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             emptyArray(stateCarbonEmissionsByYear);
+            nationalCarbonEmissionsByYear = [0,0,0,0,0,0,0,0];
             console.log(geography.id);
             state = geography.id;
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
-            var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";            
-            var nationalQueryURL = "https://api.eia.gov/category/?api_key=" + api_key + "&category_id=2251604";
+            var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
             //
 
 
@@ -77,15 +131,17 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
 
             // })
             // var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + stateFips + "&DATE=" + year;
-           
-           
+
+
             $.ajax({
                 url: stateQueryURL,
                 method: "GET"
             })
                 .then(function (response) {
+                    console.log(response);
                     var results = response.series[0].data;
-                    console.log(results);
+                    console.log(response);
+                    // LOOP TO MAKE TABLE ROWS AND PUSH TO STATECARBONEMISSIONSBYYEAR
                     $.each(results, function (index, value) {
                         console.log(index + ": " + value);
                         var newRow = $("<tr>");
@@ -98,17 +154,27 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                         return index < 7;
                     });
                 });
-                var carbonEmissions = [80, 100, 56, 120, 180, 30, 40, 120, 160];
-                createBarGraph(carbonEmissions);
 
+            /////////////// KH ///////////////// 
+            // AJAX CALL FOR NATIONAL NUMBERS
+            // LOOP TO TOTAL UP NATIONAL CARBON BY YEAR
+            states.forEach(function (state) {
+                var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state[1] + ".A";
                 $.ajax({
-                    url: nationalQueryURL,
+                    url: stateQueryURL,
                     method: "GET"
                 })
                     .then(function (response) {
-                        
-                        console.log(response);
+                        var results = response.series[0].data;
+                        var i = 7; // to iterate var yearRange for reference. UGLY HARD-CODING
+                        results.forEach(function (item) {
+                            if (item[0] === yearRange[i]) {
+                                nationalCarbonEmissionsByYear[i] += item[1];
+                            }
+                            i--; // THIS IS SOME UGLY HARD-CODING, BUT FOR NOW THIS IS OPERABLE FOR THE LIMITED DATE RANGE WE NEED
+                        })
                     })
+            })
         });
     }
 });
@@ -121,7 +187,7 @@ $("#submit-button").on("click", function () {
     var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
 
     $.ajax({
-        
+
         url: queryURL,
         method: "GET"
     })
@@ -137,22 +203,22 @@ $("#submit-button").on("click", function () {
                 $("tbody").append(newRow);
             });
         });
-        $.ajax({
-            url: queryURLTwo,
-            method: "GET"
-        })
-            .then(function (response) {
-                // var results = response.series[0].data;
-                console.log(response.data);
-                $.each(results, function( index, value ) {
-                    console.log( index + ": " + value );
-                    var newRow = $("<tr>");
-                    var carbonEmission = $("<td>").text(value[1]);
-                    var year = $("<td>").text(results[index][0]);
-                    newRow.append(carbonEmission, year);
-                    $("tbody").append(newRow);
-                  });
-            });    
+    $.ajax({
+        url: queryURLTwo,
+        method: "GET"
+    })
+        .then(function (response) {
+            // var results = response.series[0].data;
+            console.log(response.data);
+            $.each(results, function (index, value) {
+                console.log(index + ": " + value);
+                var newRow = $("<tr>");
+                var carbonEmission = $("<td>").text(value[1]);
+                var year = $("<td>").text(results[index][0]);
+                newRow.append(carbonEmission, year);
+                $("tbody").append(newRow);
+            });
+        });
 })
 
 // var url = "http://api.datausa.io/api/?show=geo&sumlevel=state&required=avg_wage";

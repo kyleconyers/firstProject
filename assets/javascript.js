@@ -159,40 +159,72 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             /////////////// KH ///////////////// 
             // AJAX CALL FOR NATIONAL NUMBERS
             // LOOP TO TOTAL UP NATIONAL CARBON BY YEAR
-            states.forEach(function (state) {
-                var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state[1] + ".A";
-                $.ajax({
-                    url: stateQueryURL,
-                    method: "GET"
-                })
-                    .then(function (response) {
-                        var results = response.series[0].data;
-                        var i = 7; // to iterate var yearRange for reference. UGLY HARD-CODING
-                        results.forEach(function (item) {
-                            if (item[0] === yearRange[i]) {
-                                nationalCarbonEmissionsByYear[i] += item[1];
-                            }
-                            i--; // THIS IS SOME UGLY HARD-CODING, BUT FOR NOW THIS IS OPERABLE FOR THE LIMITED DATE RANGE WE NEED
-                        })
-                    })
-            })
-
             ///// KH // LOOP TO MAKE TABLE ROWS AND PUSH TO NATIONALCARBON EMISSIONABYYEAR
-            // let promise = new Promise(function(resolve, reject) {
-            //     // executor (the producing code, "singer")
-            //   });
-            
-            nationalCarbonEmissionsByYear.forEach(function (entry) {
-                // debugger;
-                console.log(entry);
-                // var newRow = $("<tr>");
-                // var carbonEmission = $("<td>").text(entry);
-                // var year = $("<td>").text(yearRange[nationalCarbonEmissionsByYear - i]);
-                // newRow.append(carbonEmission, year);
-                // $("#national-data > tbody").append(newRow);
-                
-            })
-        });
+            function getData() {
+                return new Promise((resolve, reject) => {
+                    states.forEach(function (state) {
+                        var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state[1] + ".A";
+                        $.ajax({
+                            url: stateQueryURL,
+                            method: "GET"
+                        })
+                            .then(function (response) {
+                                var results = response.series[0].data;
+                                var i = 7; // to iterate var yearRange for reference. UGLY HARD-CODING
+                                results.forEach(function (item) {
+                                    if (item[0] === yearRange[i]) {
+                                        nationalCarbonEmissionsByYear[i] += item[1];
+                                    }
+                                    i--; // THIS IS SOME UGLY HARD-CODING, BUT FOR NOW THIS IS OPERABLE FOR THE LIMITED DATE RANGE WE NEED
+                                })
+                            })
+                    }).done((response) => {
+                        resolve(response);
+                    }).fail((error) => {
+                        resolve(response);
+                    });
+                });
+            }
+
+
+
+            function nationalData() {
+                nationalCarbonEmissionsByYear.forEach(function (entry) {
+                    // debugger;
+                    console.log(entry);
+                    // var newRow = $("<tr>");
+                    // var carbonEmission = $("<td>").text(entry);
+                    // var year = $("<td>").text(yearRange[nationalCarbonEmissionsByYear - i]);
+                    // newRow.append(carbonEmission, year);
+                    // $("#national-data > tbody").append(newRow);  
+                })
+            }
+
+            let printNationalCarbonData = new Promise(function (nationalData(), reject) {
+
+            });
+
+        printNationalCarbonData();
+
+        // states.forEach(function (state) {
+        //     var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state[1] + ".A";
+        //     $.ajax({
+        //         url: stateQueryURL,
+        //         method: "GET"
+        //     })
+        //         .then(function (response) {
+        //             var results = response.series[0].data;
+        //             var i = 7; // to iterate var yearRange for reference. UGLY HARD-CODING
+        //             results.forEach(function (item) {
+        //                 if (item[0] === yearRange[i]) {
+        //                     nationalCarbonEmissionsByYear[i] += item[1];
+        //                 }
+        //                 i--; // THIS IS SOME UGLY HARD-CODING, BUT FOR NOW THIS IS OPERABLE FOR THE LIMITED DATE RANGE WE NEED
+        //             })
+        //         })
+        // })
+
+    });
     }
 });
 

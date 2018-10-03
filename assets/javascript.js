@@ -64,6 +64,11 @@ function emptyArray(arr) {
     console.log(stateCarbonEmissionsByYear);
 }
 
+// Function that takes the id of a table and empty its children
+function emptyTable(tableId) {
+    $('#'+tableId+' > tbody').empty();
+}
+
 var nationalCarbonEmissionsByYear = [
     6238.54,
     6041.10,
@@ -96,7 +101,7 @@ function createBarGraph(data) {
         .enter()
         .append("rect")
         .attr("y", function (d) {
-            return svgHeight - d
+            return svgHeight - d;
         })
         .attr("height", function (d) {
             return d;
@@ -116,6 +121,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             emptyArray(stateCarbonEmissionsByYear);
+            emptyTable('state-data');
             nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
             console.log(geography.id);
             state = geography.id;

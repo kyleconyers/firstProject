@@ -185,7 +185,10 @@ $("#submit-button").on("click", function () {
     // year = $("#year").val().trim();
     var queryURL = "https://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
     var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
-
+    
+    
+   
+    
     $.ajax({
 
         url: queryURL,
@@ -202,10 +205,14 @@ $("#submit-button").on("click", function () {
                 newRow.append(carbonEmission, year);
                 $("tbody").append(newRow);
             });
-        });
+    
+});
+    
+    
     $.ajax({
         url: queryURLTwo,
-        method: "GET"
+        method: "GET"    
+        
     })
         .then(function (response) {
             // var results = response.series[0].data;
@@ -247,3 +254,43 @@ function display(data) {
     newRow.attr("id", newKey);
     $("tbody").append(newRow);
 }
+
+// var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
+// console.log(queryURLTwo.data)
+
+
+
+
+// function testajax(){
+// var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:" + "&DATE=" + year;   
+//  $.ajax({
+//         url: popQueryURL,
+//         method: "GET"
+//        }).then(function(response){
+//            popByYear[2006 + year] = response[1][0];
+//           console.log(popQueryURL)
+//        });
+
+//        }
+
+
+var yearNums = [1, 2, 3, 4, 5, 6, 7];
+var popByYear = {};
+
+yearNums.forEach(function(year){
+    var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
+    $.ajax({
+      url: popQueryURL,
+      method: "GET"
+     }).then(function(response){
+         popByYear[2006 + year] = response[1][0];
+        console.log(popQueryURL)
+        console.log(response)
+     });
+
+     })
+
+    
+    //  api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:&DATE=1
+
+    

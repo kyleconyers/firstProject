@@ -200,10 +200,6 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                 })
             }
 
-            let printNationalCarbonData = new Promise(function (nationalData(), reject) {
-
-            });
-
         printNationalCarbonData();
 
         // states.forEach(function (state) {

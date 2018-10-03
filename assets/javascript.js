@@ -142,13 +142,6 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                     console.log(response);
                     // LOOP TO MAKE TABLE ROWS AND PUSH TO STATECARBONEMISSIONSBYYEAR
                     $.each(results, function (index, value) {
-                        console.log(index + ": " + value);
-                        var newRow = $("<tr>");
-                        var carbonEmission = $("<td>").text(value[1]);
-                        // TODO check to see if the year is a key in popByYear, append it if it exists, otherwise append an empty one
-                        var year = $("<td>").text(results[index][0]);
-                        newRow.append(carbonEmission, year);
-                        $("#state-data > tbody").append(newRow);
                         stateCarbonEmissionsByYear.push(value[1]);
                         return index < 7;
                     });

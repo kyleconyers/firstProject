@@ -5,6 +5,7 @@ var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
 var yearNums = [1, 2, 3, 4, 5, 6, 7];
 var popByYear = {};
+var responseData = {};
 
 // USAGE:
 // abbrState('ny', 'name');
@@ -148,23 +149,30 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     responsive: true,
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
+            state = geography.id;
+            var stateFullName = abbrState(state, 'name');
             emptyArray(stateCarbonEmissionsByYear);
             emptyTable('state-data');
             // Updates the state name on click in the table header
             $('#state-name').text(state);
-            // console.log($('#state-data > thead > tr > th').text());
-            nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
-            console.log(geography.id);
 
-            state = geography.id;
-            var stateFullName = abbrState(state, "name");
-            // debugger;
+            ///// KH // TABLE DATA VARIABLES
+            var carbonEmission;
+            var year;
+
+            var tableRow = function (carbon, year) {
+                var newRow = $("<tr>");
+                var carbonEmissionDom = $("<td>").text(carbon);
+                var yearDom = $("<td>").text(year);
+                newRow.append(carbonEmissionDom, yearDom);
+                $("#state-data > tbody").append(newRow);
+            }            
 
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
             var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
 
-
+            //// KGC // API QUERY FOR POPULATION STATISTICS
             yearNums.forEach(function (year) {
                 var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
                 $.ajax({
@@ -172,10 +180,10 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                     method: "GET"
                 }).then(function (response) {
                     popByYear[2006 + year] = response[1][0];
+                    responseData = response;
                     console.log(popQueryURL)
                     console.log(response)
                 });
-            
             })
 
             $.ajax({
@@ -188,14 +196,9 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                     console.log(response);
                     // LOOP TO MAKE TABLE ROWS AND PUSH TO STATECARBONEMISSIONSBYYEAR
                     $.each(results, function (index, value) {
-                        console.log(index + ": " + value);
-                        var newRow = $("<tr>");
-                        var carbonEmission = $("<td>").text(value[1]);
-
-                        // TODO check to see if the year is a key in popByYear, append it if it exists, otherwise append an empty one
-                        var year = $("<td>").text(results[index][0]);
-                        newRow.append(carbonEmission, year);
-                        $("#state-data > tbody").append(newRow);
+                        carbonEmission = value[1];
+                        year = results[index][0];
+                        tableRow(carbonEmission, year);
                         stateCarbonEmissionsByYear.push(value[1]);
                         return index < 7;
                     });
@@ -254,7 +257,6 @@ $(window).on('resize', function () {
 
 
 ////// KGC // POPULATION API QUERY FUNCTION TESTING
-
 yearNums.forEach(function (year) {
     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
     $.ajax({
@@ -262,6 +264,7 @@ yearNums.forEach(function (year) {
         method: "GET"
     }).then(function (response) {
         popByYear[2006 + year] = response[1][0];
+        responseData = response;
         console.log(popQueryURL)
         console.log(response)
     });

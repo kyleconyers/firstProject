@@ -120,11 +120,14 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     responsive: true,
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
+            state = geography.id;
             emptyArray(stateCarbonEmissionsByYear);
             emptyTable('state-data');
+            // Updates the state name on click in the table header
+            $('#state-name').text(state);
+            // console.log($('#state-data > thead > tr > th').text());
             nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
             console.log(geography.id);
-            state = geography.id;
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
             var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";

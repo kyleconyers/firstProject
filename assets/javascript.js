@@ -1,62 +1,90 @@
 var state;
 var year;
-var states = [
-    ['Arizona', 'AZ'],
-    ['Alabama', 'AL'],
-    ['Alaska', 'AK'],
-    ['Arizona', 'AZ'],
-    ['Arkansas', 'AR'],
-    ['California', 'CA'],
-    ['Colorado', 'CO'],
-    ['Connecticut', 'CT'],
-    ['Delaware', 'DE'],
-    ['Florida', 'FL'],
-    ['Georgia', 'GA'],
-    ['Hawaii', 'HI'],
-    ['Idaho', 'ID'],
-    ['Illinois', 'IL'],
-    ['Indiana', 'IN'],
-    ['Iowa', 'IA'],
-    ['Kansas', 'KS'],
-    ['Kentucky', 'KY'],
-    ['Kentucky', 'KY'],
-    ['Louisiana', 'LA'],
-    ['Maine', 'ME'],
-    ['Maryland', 'MD'],
-    ['Massachusetts', 'MA'],
-    ['Michigan', 'MI'],
-    ['Minnesota', 'MN'],
-    ['Mississippi', 'MS'],
-    ['Missouri', 'MO'],
-    ['Montana', 'MT'],
-    ['Nebraska', 'NE'],
-    ['Nevada', 'NV'],
-    ['New Hampshire', 'NH'],
-    ['New Jersey', 'NJ'],
-    ['New Mexico', 'NM'],
-    ['New York', 'NY'],
-    ['North Carolina', 'NC'],
-    ['North Dakota', 'ND'],
-    ['Ohio', 'OH'],
-    ['Oklahoma', 'OK'],
-    ['Oregon', 'OR'],
-    ['Pennsylvania', 'PA'],
-    ['Rhode Island', 'RI'],
-    ['South Carolina', 'SC'],
-    ['South Dakota', 'SD'],
-    ['Tennessee', 'TN'],
-    ['Texas', 'TX'],
-    ['Utah', 'UT'],
-    ['Vermont', 'VT'],
-    ['Virginia', 'VA'],
-    ['Washington', 'WA'],
-    ['West Virginia', 'WV'],
-    ['Wisconsin', 'WI'],
-    ['Wyoming', 'WY'],
-];
+
 var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
+var yearNums = [1, 2, 3, 4, 5, 6, 7];
+var popByYear = {};
 
+// USAGE:
+// abbrState('ny', 'name');
+// --> 'New York'
+// abbrState('New York', 'abbr');
+// --> 'NY'
+
+function abbrState(input, to){
+    
+    var states = [
+        ['Arizona', 'AZ'],
+        ['Alabama', 'AL'],
+        ['Alaska', 'AK'],
+        ['Arizona', 'AZ'],
+        ['Arkansas', 'AR'],
+        ['California', 'CA'],
+        ['Colorado', 'CO'],
+        ['Connecticut', 'CT'],
+        ['Delaware', 'DE'],
+        ['Florida', 'FL'],
+        ['Georgia', 'GA'],
+        ['Hawaii', 'HI'],
+        ['Idaho', 'ID'],
+        ['Illinois', 'IL'],
+        ['Indiana', 'IN'],
+        ['Iowa', 'IA'],
+        ['Kansas', 'KS'],
+        ['Kentucky', 'KY'],
+        ['Kentucky', 'KY'],
+        ['Louisiana', 'LA'],
+        ['Maine', 'ME'],
+        ['Maryland', 'MD'],
+        ['Massachusetts', 'MA'],
+        ['Michigan', 'MI'],
+        ['Minnesota', 'MN'],
+        ['Mississippi', 'MS'],
+        ['Missouri', 'MO'],
+        ['Montana', 'MT'],
+        ['Nebraska', 'NE'],
+        ['Nevada', 'NV'],
+        ['New Hampshire', 'NH'],
+        ['New Jersey', 'NJ'],
+        ['New Mexico', 'NM'],
+        ['New York', 'NY'],
+        ['North Carolina', 'NC'],
+        ['North Dakota', 'ND'],
+        ['Ohio', 'OH'],
+        ['Oklahoma', 'OK'],
+        ['Oregon', 'OR'],
+        ['Pennsylvania', 'PA'],
+        ['Rhode Island', 'RI'],
+        ['South Carolina', 'SC'],
+        ['South Dakota', 'SD'],
+        ['Tennessee', 'TN'],
+        ['Texas', 'TX'],
+        ['Utah', 'UT'],
+        ['Vermont', 'VT'],
+        ['Virginia', 'VA'],
+        ['Washington', 'WA'],
+        ['West Virginia', 'WV'],
+        ['Wisconsin', 'WI'],
+        ['Wyoming', 'WY'],
+    ];
+
+    if (to == 'abbr'){
+        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        for(i = 0; i < states.length; i++){
+            if(states[i][0] == input){
+                return(states[i][1]);
+            }
+        }    
+    } else if (to == 'name'){
+        input = input.toUpperCase();
+        for(i = 0; i < states.length; i++){
+            if(states[i][1] == input){
+                return(states[i][0]);
+            }
+        }    
+    }
+}
 // Function to empty any array
 function emptyArray(arr) {
     arr.length = 0;
@@ -120,7 +148,6 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     responsive: true,
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
-            state = geography.id;
             emptyArray(stateCarbonEmissionsByYear);
             emptyTable('state-data');
             // Updates the state name on click in the table header
@@ -128,9 +155,28 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             // console.log($('#state-data > thead > tr > th').text());
             nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
             console.log(geography.id);
+
+            state = geography.id;
+            var stateFullName = abbrState(state, "name");
+            // debugger;
+
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
             var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
+
+
+            yearNums.forEach(function (year) {
+                var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
+                $.ajax({
+                    url: popQueryURL,
+                    method: "GET"
+                }).then(function (response) {
+                    popByYear[2006 + year] = response[1][0];
+                    console.log(popQueryURL)
+                    console.log(response)
+                });
+            
+            })
 
             $.ajax({
                 url: stateQueryURL,
@@ -200,8 +246,6 @@ $(window).on('resize', function () {
 
 
 ////// KGC // POPULATION API QUERY FUNCTION TESTING
-var yearNums = [1, 2, 3, 4, 5, 6, 7];
-var popByYear = {};
 
 yearNums.forEach(function (year) {
     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;

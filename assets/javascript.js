@@ -148,11 +148,14 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     responsive: true,
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
-            
             emptyArray(stateCarbonEmissionsByYear);
             emptyTable('state-data');
+            // Updates the state name on click in the table header
+            $('#state-name').text(state);
+            // console.log($('#state-data > thead > tr > th').text());
             nationalCarbonEmissionsByYear = [0, 0, 0, 0, 0, 0, 0, 0];
             console.log(geography.id);
+
             state = geography.id;
             var stateFullName = abbrState(state, "name");
             // debugger;

@@ -5,6 +5,10 @@
     height: 300px;
 }
 
+#mobile-dropdown {
+    display: none;
+}
+
 .bar-chart {
     background-color: #C7D9D9;
 }
@@ -17,4 +21,9 @@
 
 .jumbotron {
     padding: 1rem 0rem;
+}
+
+@media only screen and (max-width: 480px) {
+    #mobile-dropdown {  display: flex; }
+
 }

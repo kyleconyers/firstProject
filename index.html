@@ -2,10 +2,11 @@
 <html lang="en">
 
 <head>
-    <title>Carbon Emissions</title>
+    <title>Carbon Emissions All Good</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
@@ -22,9 +23,10 @@
     </div>
     <div id="container"></div>
     <div class="container">
-        <!-- <div class="card">
+        <!-- KH // THE DROP DOWN IS STILL ESSENTIAL AS A FALLBACK FOR MOBILE RESPONSIVE VIEW -->
+        <div class="card drop-down" id="mobile-dropdown">
             <div class="card-header">
-                Select Country
+                Select State
             </div>
             <div class="card-body">
                 <form>
@@ -92,16 +94,13 @@
                 </form>
                 <button type="submit" class="btn btn-primary mb-2" id="submit-button">Submit</button>
             </div>
-        </div> -->
-        <br>
-        <svg id="bar-graph"></svg>
+        </div>
         <br>
         <div class="card">
-            <div class="card-header">
-                Carbon emissions data
+            <div id="state-name" class="card-header">
             </div>
-            <div class="card-body" id="add-articles-here">
-                <table class="table">
+            <div class="card-body" id="">
+                <table class="table" id="state-data">
                     <thead>
                         <tr>
                             <th scope="col">Carbon emissions (million metric tons CO2)</th>
@@ -113,6 +112,25 @@
                 </table>
             </div>
         </div>
+        <div class="card">
+            <div class="card-header">
+                National Carbon Emissions Data
+            </div>
+            <div class="card-body" id="">
+                <table class="table" id="national-data">
+                    <thead>
+                        <tr>
+                            <th scope="col">Carbon emissions (million metric tons CO2)</th>
+                            <th scope="col">Year</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <br>
+        <svg id="bar-graph"></svg>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

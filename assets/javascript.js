@@ -133,6 +133,12 @@ function createBarGraph(data) {
     var barPadding = 5;
     var barWidth = (svgWidth / dataset.length);
 
+    // const yScale = d3.scaleLinear()
+    //     .domain([0, d3.max(yearRange, (d) => d[0])])
+    //     .range([h - padding, padding]);
+
+    // const yAxis = d3.axisLeft(yScale);
+
     var barChart = svg.selectAll("rect")
         .data(dataset)
         .enter()
@@ -152,7 +158,7 @@ function createBarGraph(data) {
         })
         .attr("fill", "navy")
         .attr("class", "bar");
-    
+
     svg.selectAll("text")
         .data(dataset)
         .enter()
@@ -165,7 +171,10 @@ function createBarGraph(data) {
             return "translate(" + translate + ")";
         })
         .attr("font-family", "monospace")
-        .attr("fill", "red")
+        .attr("fill", "red");
+    // svg.append("g")
+    //     .attr("transform", "translate(" + (w - padding) + ",0)")
+    //     .call(yAxis);
 };
 
 // CREATE USA MAP WITH CLICKABLE STATES, CONTAINS EVENT HANDLER THAT TRIGGERS API CALLS

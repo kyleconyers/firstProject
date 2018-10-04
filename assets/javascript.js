@@ -99,8 +99,7 @@ function emptyTable(tableId) {
 }
 
 function emptyBarGraph() {
-    debugger;
-    $("#bar-graph").selectAll("rect").remove();
+    $("#bar-graph").empty();
 }
 
 var nationalCarbonEmissionsByYear = [
@@ -151,7 +150,9 @@ function createBarGraph(data) {
             var translate = [barWidth * i, 0];
             return "translate(" + translate + ")";
         })
-        .attr("fill", "navy");
+        .attr("fill", "navy")
+        .attr("class", "bar");
+    
     svg.selectAll("text")
         .data(dataset)
         .enter()
@@ -160,10 +161,11 @@ function createBarGraph(data) {
         .text((d) => d.toFixed(2))
         .attr("transform", function (d, i) {
             //translate() is what sets the position. it can take x and y parameters
-            var translate = [(barWidth * i) + 3, 0];
+            var translate = [(barWidth * i) + 6, 0];
             return "translate(" + translate + ")";
         })
-        .attr("text-align", "center")
+        .attr("font-family", "monospace")
+        .attr("fill", "red")
 };
 
 // CREATE USA MAP WITH CLICKABLE STATES, CONTAINS EVENT HANDLER THAT TRIGGERS API CALLS
@@ -299,3 +301,4 @@ yearNums.forEach(function (year) {
     });
 
 })
+

@@ -27,3 +27,7 @@
     #mobile-dropdown {  display: flex; }
 
 }
+
+.bar:hover {
+    fill: brown;
+  }

@@ -180,6 +180,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                     method: "GET"
                 }).then(function (response) {
                     popByYear[2006 + year] = response[1][0];
+
                     responseData = response;
                     console.log(popQueryURL)
                     console.log(response)

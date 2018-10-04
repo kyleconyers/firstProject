@@ -13,8 +13,8 @@ var responseData = {};
 // abbrState('New York', 'abbr');
 // --> 'NY'
 
-function abbrState(input, to){
-    
+function abbrState(input, to) {
+
     var states = [
         ['Arizona', 'AZ'],
         ['Alabama', 'AL'],
@@ -70,20 +70,20 @@ function abbrState(input, to){
         ['Wyoming', 'WY'],
     ];
 
-    if (to == 'abbr'){
-        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-        for(i = 0; i < states.length; i++){
-            if(states[i][0] == input){
-                return(states[i][1]);
+    if (to == 'abbr') {
+        input = input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+        for (i = 0; i < states.length; i++) {
+            if (states[i][0] == input) {
+                return (states[i][1]);
             }
-        }    
-    } else if (to == 'name'){
+        }
+    } else if (to == 'name') {
         input = input.toUpperCase();
-        for(i = 0; i < states.length; i++){
-            if(states[i][1] == input){
-                return(states[i][0]);
+        for (i = 0; i < states.length; i++) {
+            if (states[i][1] == input) {
+                return (states[i][0]);
             }
-        }    
+        }
     }
 }
 // Function to empty any array
@@ -95,7 +95,11 @@ function emptyArray(arr) {
 
 // Function that takes the id of a table and empty its children
 function emptyTable(tableId) {
-    $('#'+tableId+' > tbody').empty();
+    $('#' + tableId + ' > tbody').empty();
+}
+
+function emptyBarGraph() {
+    $("#bar-graph").empty();
 }
 
 var nationalCarbonEmissionsByYear = [
@@ -113,33 +117,64 @@ var nationalPopulationByYear = []; // for 2007 - 2014
 
 // D3 BAR CHART CONSTRUCTOR
 function createBarGraph(data) {
+
+    // vars to set the dimensions
     var svgWidth = 500;
     var svgHeight = 300;
+    var maxHeight = Math.max(...data);
 
     var svg = d3.select('#bar-graph')
+        // here we are setting the attributes of the svg we just selected
         .attr("width", svgWidth)
         .attr("height", svgHeight)
         .attr("class", "bar-chart");
 
-    var dataset = data;
+    var dataset = data; // this is perhaps a bit redundant, but possibly more useful for more complex datasets
     var barPadding = 5;
     var barWidth = (svgWidth / dataset.length);
+
+    // const yScale = d3.scaleLinear()
+    //     .domain([0, d3.max(yearRange, (d) => d[0])])
+    //     .range([h - padding, padding]);
+
+    // const yAxis = d3.axisLeft(yScale);
 
     var barChart = svg.selectAll("rect")
         .data(dataset)
         .enter()
         .append("rect")
+        // can add .style() with callbak to set conditional formatting for each bar, although it's easier to set them with classes via .attr()
         .attr("y", function (d) {
-            return svgHeight - d;
+            return 100 - (d / 1000) * 100 + "%";
         })
         .attr("height", function (d) {
-            return d;
+            return (d / 1000) * 100 + "%"; // perhaps set the height to the max datapoint minus 10%. define them as variables above
         })
         .attr("width", barWidth - barPadding)
         .attr("transform", function (d, i) {
+            //translate() is what sets the position. it can take x and y parameters
             var translate = [barWidth * i, 0];
             return "translate(" + translate + ")";
-        });
+        })
+        .attr("fill", "navy")
+        .attr("class", "bar");
+
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("y", (d, i) => (100 - (d / 1000) * 100) - 4 + "%")
+        .text((d) => d.toFixed(2))
+        .attr("transform", function (d, i) {
+            //translate() is what sets the position. it can take x and y parameters
+            var translate = [(barWidth * i) + 6, 0];
+            return "translate(" + translate + ")";
+        })
+        .attr("font-family", "monospace")
+        .attr("fill", "red");
+    // svg.append("g")
+    //     .attr("transform", "translate(" + (w - padding) + ",0)")
+    //     .call(yAxis);
 };
 
 // CREATE USA MAP WITH CLICKABLE STATES, CONTAINS EVENT HANDLER THAT TRIGGERS API CALLS
@@ -153,6 +188,9 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             var stateFullName = abbrState(state, 'name');
             emptyArray(stateCarbonEmissionsByYear);
             emptyTable('state-data');
+            if ($("#bar-graph").children().length > 0) {
+                emptyBarGraph();
+            }
             // Updates the state name on click in the table header
             $('#state-name').text(state);
 
@@ -166,7 +204,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                 var yearDom = $("<td>").text(year);
                 newRow.append(carbonEmissionDom, yearDom);
                 $("#state-data > tbody").append(newRow);
-            }            
+            }
 
             // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
             var api_key = "08e47fd145ef2607fce2a1442928469e";
@@ -203,7 +241,9 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                         stateCarbonEmissionsByYear.push(value[1]);
                         return index < 7;
                     });
+                    createBarGraph(stateCarbonEmissionsByYear);
                 });
+
         });
     }
 });
@@ -271,3 +311,4 @@ yearNums.forEach(function (year) {
     });
 
 })
+

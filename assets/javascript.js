@@ -3,7 +3,7 @@ var year;
 
 var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
-var yearNums = [1, 2, 3, 4, 5, 6, 7];
+var yearNums = [1, 2, 3, 4, 5, 6, 7, 8];
 var popByYear = {};
 var responseData = {};
 
@@ -182,7 +182,8 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                     popByYear[2006 + year] = response[1][0];
                     responseData = response;
                     console.log(popQueryURL)
-                    console.log(response)
+                    // console.log(responseData)
+
                 });
             })
 
@@ -257,16 +258,16 @@ $(window).on('resize', function () {
 
 
 ////// KGC // POPULATION API QUERY FUNCTION TESTING
-yearNums.forEach(function (year) {
-    var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
-    $.ajax({
-        url: popQueryURL,
-        method: "GET"
-    }).then(function (response) {
-        popByYear[2006 + year] = response[1][0];
-        responseData = response;
-        console.log(popQueryURL)
-        console.log(response)
-    });
+// yearNums.forEach(function (year) {
+//     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
+//     $.ajax({
+//         url: popQueryURL,
+//         method: "GET"
+//     }).then(function (response) {
+//         popByYear[2006 + year] = response[1][0];
+//         responseData = response;
+//         console.log(popQueryURL)
+//         console.log(response)
+//     });
 
-})
+// })

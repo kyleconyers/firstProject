@@ -1,8 +1,17 @@
+body { 
+    background-color: #d1e6fc;
+}
+
 #container {
     margin: auto;
     position: relative; 
     width: 100%; 
     height: 300px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
 }
 
 #mobile-dropdown {
@@ -21,6 +30,8 @@
 
 .jumbotron {
     padding: 1rem 0rem;
+    background-color: #b8d6f4;
+    margin-bottom: 0;
 }
 
 @media only screen and (max-width: 480px) {
@@ -31,3 +42,14 @@
 .bar:hover {
     fill: brown;
   }
+
+.site-title {
+    color: #fff;
+    font-family: 'K2D', sans-serif;
+    font-weight: 700;
+}
+
+#bar-graph {
+    align-self: center;
+    margin-bottom: 36px;
+}

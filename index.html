@@ -2,11 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>Carbon Emissions All Good</title>
+    <title>Carbon Emissions by State</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=K2D:400,700" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
@@ -17,8 +19,8 @@
 <body>
     <div class="jumbotron jumbotron-fluid">
         <div class="container text-center">
-            <h3 class="display-4">Carbon emissions by Country</h3>
-            <p>Data visiualization using D3.js</p>
+            <h1 class="display-4 site-title">Carbon Emissions by State</h1>
+            <p>With Data Visualization Using D3.js</p>
         </div>
     </div>
     <div id="container"></div>
@@ -118,7 +120,8 @@
                 </table>
             </div>
         </div>
-        <div class="card">
+        <!-- //// KH // I'M GOING TO LEAVE THIS OFF AT THE MOMENT UNTIL IT'S USEFUL IN A RELATIONAL FORMAT -->
+        <!-- <div class="card">
             <div class="card-header">
                 National Carbon Emissions Data
             </div>
@@ -134,7 +137,7 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
         <br>
         <svg id="bar-graph"></svg>
     </div>

@@ -3,9 +3,72 @@ var year;
 
 var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
-var yearNums = [1, 2, 3, 4, 5, 6, 7];
+var yearNums = [1, 2, 3, 4, 5, 6, 7, 8];
+// var statePopulations = {};
+var statePops = [];
 var popByYear = {};
 var responseData = {};
+var states = {
+    'AL': 'Alabama',
+    'AK': 'Alaska',
+    'AS': 'American Samoa',
+    'AZ': 'Arizona',
+    'AR': 'Arkansas',
+    'CA': 'California',
+    'CO': 'Colorado',
+    'CT': 'Connecticut',
+    'DE': 'Delaware',
+    'DC': 'District Of Columbia',
+    'FM': 'Federated States Of Micronesia',
+    'FL': 'Florida',
+    'GA': 'Georgia',
+    'GU': 'Guam',
+    'HI': 'Hawaii',
+    'ID': 'Idaho',
+    'IL': 'Illinois',
+    'IN': 'Indiana',
+    'IA': 'Iowa',
+    'KS': 'Kansas',
+    'KY': 'Kentucky',
+    'LA': 'Louisiana',
+    'ME': 'Maine',
+    'MH': 'Marshall Islands',
+    'MD': 'Maryland',
+    'MA': 'Massachusetts',
+    'MI': 'Michigan',
+    'MN': 'Minnesota',
+    'MS': 'Mississippi',
+    'MO': 'Missouri',
+    'MT': 'Montana',
+    'NE': 'Nebraska',
+    'NV': 'Nevada',
+    'NH': 'New Hampshire',
+    'NJ': 'New Jersey',
+    'NM': 'New Mexico',
+    'NY': 'New York',
+    'NC': 'North Carolina',
+    'ND': 'North Dakota',
+    'MP': 'Northern Mariana Islands',
+    'OH': 'Ohio',
+    'OK': 'Oklahoma',
+    'OR': 'Oregon',
+    'PW': 'Palau',
+    'PA': 'Pennsylvania',
+    'PR': 'Puerto Rico',
+    'RI': 'Rhode Island',
+    'SC': 'South Carolina',
+    'SD': 'South Dakota',
+    'TN': 'Tennessee',
+    'TX': 'Texas',
+    'UT': 'Utah',
+    'VT': 'Vermont',
+    'VI': 'Virgin Islands',
+    'VA': 'Virginia',
+    'WA': 'Washington',
+    'WV': 'West Virginia',
+    'WI': 'Wisconsin',
+    'WY': 'Wyoming'
+  };
 
 // USAGE:
 // abbrState('ny', 'name');
@@ -70,11 +133,17 @@ function abbrState(input, to) {
         ['Wyoming', 'WY'],
     ];
 
-    if (to == 'abbr') {
-        input = input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
-        for (i = 0; i < states.length; i++) {
-            if (states[i][0] == input) {
-                return (states[i][1]);
+
+var ab = "WY"
+
+states[ab]
+
+
+    if (to == 'abbr'){
+        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+        for(i = 0; i < states.length; i++){
+            if(states[i][0] == input){
+                return(states[i][1]);
             }
         }
     } else if (to == 'name') {
@@ -185,24 +254,43 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             state = geography.id;
-            var stateFullName = abbrState(state, 'name');
+            console.log(states[state])
+            var stateFullName = states[state];
             emptyArray(stateCarbonEmissionsByYear);
+            emptyArray(statePops)
             emptyTable('state-data');
             if ($("#bar-graph").children().length > 0) {
                 emptyBarGraph();
             }
             // Updates the state name on click in the table header
             $('#state-name').text(state);
-
+            console.log(popByYear)
             ///// KH // TABLE DATA VARIABLES
             var carbonEmission;
             var year;
+            // var statePops = [];
+            Object.values(popByYear).map(function(year){
+                year.map(function(state){
+                    if(state[1] === stateFullName){
+                        console.log(state[0])
+                        statePops.push(state[0])
+                    }
+
+                })
+            })
+            console.log(statePops)
 
             var tableRow = function (carbon, year) {
+                console.log(statePops, "state pops")
+                console.log(statePops[year-1])
+                console.log(year-2006)
                 var newRow = $("<tr>");
                 var carbonEmissionDom = $("<td>").text(carbon);
+                var yearPopulation = $("<td>").text(statePops[year-2007])
+                
                 var yearDom = $("<td>").text(year);
-                newRow.append(carbonEmissionDom, yearDom);
+                console.log(yearPopulation)
+                newRow.append(carbonEmissionDom, yearPopulation, yearDom);
                 $("#state-data > tbody").append(newRow);
             }
 
@@ -211,19 +299,19 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
 
             //// KGC // API QUERY FOR POPULATION STATISTICS
-            yearNums.forEach(function (year) {
-                var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
-                $.ajax({
-                    url: popQueryURL,
-                    method: "GET"
-                }).then(function (response) {
-                    popByYear[2006 + year] = response[1][0];
-
-                    responseData = response;
-                    console.log(popQueryURL)
-                    console.log(response)
-                });
-            })
+            // yearNums.forEach(function (year) {
+            //     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
+            //     $.ajax({
+            //         url: popQueryURL,
+            //         method: "GET"
+            //     }).then(function (response) {
+            //         popByYear[2006 + year] = response[1][0];
+            //         responseData = response;
+            //         // console.log(popQueryURL)
+            //         console.log(popQueryURL, responseData)
+            
+            //     });
+            // })
 
             $.ajax({
                 url: stateQueryURL,
@@ -248,6 +336,10 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     }
 });
 
+
+
+
+
 ///// AS // QUERY FUNCTION BASED ON DROP-DOWN SELECTION
 $("#submit-button").on("click", function () {
     event.preventDefault();
@@ -255,7 +347,7 @@ $("#submit-button").on("click", function () {
 
     var queryURL = "https://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
     var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
-
+console.log("begin api call")
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -272,6 +364,22 @@ $("#submit-button").on("click", function () {
                 $("tbody").append(newRow);
             });
         });
+
+console.log("before forEach")
+yearNums.forEach(function (year) {
+    var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
+    $.ajax({
+        url: popQueryURL,
+        method: "GET"
+    }).then(function (response) {
+        popByYear[2006 + year] = response[1][0];
+        responseData = response;
+        // console.log(popQueryURL)
+        console.log(popQueryURL, responseData)
+
+    });
+})
+
 
     $.ajax({
         url: queryURLTwo,
@@ -291,6 +399,8 @@ $("#submit-button").on("click", function () {
         });
 })
 
+
+
 ////// KH // Sets the size of the map responsive to the browser window
 $(window).on('resize', function () {
     map.resize();
@@ -304,11 +414,10 @@ yearNums.forEach(function (year) {
         url: popQueryURL,
         method: "GET"
     }).then(function (response) {
-        popByYear[2006 + year] = response[1][0];
+        popByYear[year] = response;
         responseData = response;
-        console.log(popQueryURL)
-        console.log(response)
+        // console.log(popQueryURL)
+        // console.log(popQueryURL, responseData)
     });
 
 })
-

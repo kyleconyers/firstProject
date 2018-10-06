@@ -2,10 +2,13 @@
 <html lang="en">
 
 <head>
-    <title>Carbon Emissions</title>
+    <title>Carbon Emissions by State</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=K2D:400,700" rel="stylesheet">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
@@ -16,15 +19,16 @@
 <body>
     <div class="jumbotron jumbotron-fluid">
         <div class="container text-center">
-            <h3 class="display-4">Carbon emissions by Country</h3>
-            <p>Data visiualization using D3.js</p>
+            <h1 class="display-4 site-title">Carbon Emissions by State</h1>
+            <p>With Data Visualization Using D3.js</p>
         </div>
     </div>
     <div id="container"></div>
     <div class="container">
-        <!-- <div class="card">
+        <!-- KH // THE DROP DOWN IS STILL ESSENTIAL AS A FALLBACK FOR MOBILE RESPONSIVE VIEW -->
+        <div class="card drop-down" id="mobile-dropdown">
             <div class="card-header">
-                Select Country
+                Select State
             </div>
             <div class="card-body">
                 <form>
@@ -92,16 +96,38 @@
                 </form>
                 <button type="submit" class="btn btn-primary mb-2" id="submit-button">Submit</button>
             </div>
-        </div> -->
-        <br>
-        <svg id="bar-graph"></svg>
+        </div>
         <br>
         <div class="card">
-            <div class="card-header">
-                Carbon emissions data
+            <div id="state-name" class="card-header">
             </div>
-            <div class="card-body" id="add-articles-here">
-                <table class="table">
+            <div class="card-body" id="">
+                <table class="table" id="state-data">
+                    <thead>
+                        <tr>
+                            
+                            
+                            <th scope="col">Year</th>
+                            <th scope="col">Population</th>
+                            <th scope="col">Carbon emissions (million metric tons CO2)</th>
+                            <th scope="col">Emissions per Capita (metric tons CO2)</th>
+                            
+                            
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- //// KH // I'M GOING TO LEAVE THIS OFF AT THE MOMENT UNTIL IT'S USEFUL IN A RELATIONAL FORMAT -->
+        <!-- <div class="card">
+            <div class="card-header">
+                National Carbon Emissions Data
+            </div>
+            <div class="card-body" id="">
+                <table class="table" id="national-data">
                     <thead>
                         <tr>
                             <th scope="col">Carbon emissions (million metric tons CO2)</th>
@@ -112,7 +138,10 @@
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
+        <br>
+        <svg id="bar-graph"></svg>
+        <h2><a href="bubbleChart.html">Bubble Chart for Population</a></h2>
     </div>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

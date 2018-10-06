@@ -158,8 +158,8 @@ states[ab]
 // Function to empty any array
 function emptyArray(arr) {
     arr.length = 0;
-    console.log("Working");
-    console.log(stateCarbonEmissionsByYear);
+    // console.log("Working");
+    // console.log(stateCarbonEmissionsByYear);
 }
 
 // Function that takes the id of a table and empty its children
@@ -254,7 +254,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
     done: function (datamap) {
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             state = geography.id;
-            console.log(states[state])
+            // console.log(states[state])
             var stateFullName = states[state];
             emptyArray(stateCarbonEmissionsByYear);
             emptyArray(statePops)
@@ -264,7 +264,7 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             }
             // Updates the state name on click in the table header
             $('#state-name').text(state);
-            console.log(popByYear)
+            // console.log(popByYear)
             ///// KH // TABLE DATA VARIABLES
             var carbonEmission;
             var year;
@@ -272,25 +272,32 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
             Object.values(popByYear).map(function(year){
                 year.map(function(state){
                     if(state[1] === stateFullName){
-                        console.log(state[0])
+                        // console.log(state[0])
                         statePops.push(state[0])
                     }
 
                 })
             })
-            console.log(statePops)
+            // console.log(statePops)
 
             var tableRow = function (carbon, year) {
-                console.log(statePops, "state pops")
-                console.log(statePops[year-1])
-                console.log(year-2006)
+                // console.log(statePops, "state pops")
+                // console.log(statePops[year-1])
+                // console.log(year-2006)
                 var newRow = $("<tr>");
-                var carbonEmissionDom = $("<td>").text(carbon);
-                var yearPopulation = $("<td>").text(statePops[year-2007])
+                // var carbonEmissionDom = carbon.toFixed(2)
+                var carbonEmissionDom = $("<td>").text(carbon.toFixed(2));
+                
+                // var yearPopulation = $("<td>").text(statePops[year-2007])
+                var yearPopulation = statePops[year-2007];
+                //console.log(yearPopulation);
+                yearPopulation = $("<td>").text(parseFloat(yearPopulation).toLocaleString('en'));
+                var popPerCapita = (carbon * 1000000) / (statePops[year-2007]);
+                popPerCapita = $("<td>").text(popPerCapita.toFixed(2));
                 
                 var yearDom = $("<td>").text(year);
-                console.log(yearPopulation)
-                newRow.append(carbonEmissionDom, yearPopulation, yearDom);
+                //console.log(yearPopulation)
+                newRow.append( yearDom, yearPopulation, carbonEmissionDom, popPerCapita  );
                 $("#state-data > tbody").append(newRow);
             }
 
@@ -318,9 +325,9 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
                 method: "GET"
             })
                 .then(function (response) {
-                    console.log(response);
+                    //console.log(response);
                     var results = response.series[0].data;
-                    console.log(response);
+                    //console.log(response);
                     // LOOP TO MAKE TABLE ROWS AND PUSH TO STATECARBONEMISSIONSBYYEAR
                     $.each(results, function (index, value) {
                         carbonEmission = value[1];
@@ -347,7 +354,7 @@ $("#submit-button").on("click", function () {
 
     var queryURL = "https://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
     var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
-console.log("begin api call")
+// console.log("begin api call")
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -356,16 +363,17 @@ console.log("begin api call")
             var results = response.series[0].data;
             // console.log(results);
             $.each(results, function (index, value) {
-                console.log(index + ": " + value);
+                // console.log(index + ": " + value);
                 var newRow = $("<tr>");
                 var carbonEmission = $("<td>").text(value[1]);
                 var year = $("<td>").text(results[index][0]);
+                
                 newRow.append(carbonEmission, year);
                 $("tbody").append(newRow);
             });
         });
 
-console.log("before forEach")
+//console.log("before forEach")
 yearNums.forEach(function (year) {
     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
     $.ajax({
@@ -375,7 +383,7 @@ yearNums.forEach(function (year) {
         popByYear[2006 + year] = response[1][0];
         responseData = response;
         // console.log(popQueryURL)
-        console.log(popQueryURL, responseData)
+        // console.log(popQueryURL, responseData)
 
     });
 })
@@ -387,9 +395,9 @@ yearNums.forEach(function (year) {
     })
         .then(function (response) {
             // var results = response.series[0].data;
-            console.log(response.data);
+            // console.log(response.data);
             $.each(results, function (index, value) {
-                console.log(index + ": " + value);
+                // console.log(index + ": " + value);
                 var newRow = $("<tr>");
                 var carbonEmission = $("<td>").text(value[1]);
                 var year = $("<td>").text(results[index][0]);

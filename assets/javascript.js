@@ -1,10 +1,8 @@
 var state;
 var year;
-
 var stateCarbonEmissionsByYear = [];
 var yearRange = ["2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014"];
 var yearNums = [1, 2, 3, 4, 5, 6, 7, 8];
-// var statePopulations = {};
 var statePops = [];
 var popByYear = {};
 var responseData = {};
@@ -68,14 +66,13 @@ var states = {
     'WV': 'West Virginia',
     'WI': 'Wisconsin',
     'WY': 'Wyoming'
-  };
+};
 
-// USAGE:
+// FUNCTION TO SWAP ABBREVIATIONS AND FULL STATE NAMES 
 // abbrState('ny', 'name');
 // --> 'New York'
 // abbrState('New York', 'abbr');
 // --> 'NY'
-
 function abbrState(input, to) {
 
     var states = [
@@ -133,17 +130,14 @@ function abbrState(input, to) {
         ['Wyoming', 'WY'],
     ];
 
+    var ab = "WY"
+    states[ab]
 
-var ab = "WY"
-
-states[ab]
-
-
-    if (to == 'abbr'){
-        input = input.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
-        for(i = 0; i < states.length; i++){
-            if(states[i][0] == input){
-                return(states[i][1]);
+    if (to == 'abbr') {
+        input = input.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+        for (i = 0; i < states.length; i++) {
+            if (states[i][0] == input) {
+                return (states[i][1]);
             }
         }
     } else if (to == 'name') {
@@ -155,18 +149,18 @@ states[ab]
         }
     }
 }
-// Function to empty any array
+
+//// AS // Function to empty any array
 function emptyArray(arr) {
     arr.length = 0;
-    // console.log("Working");
-    // console.log(stateCarbonEmissionsByYear);
 }
 
-// Function that takes the id of a table and empty its children
+//// AS // Function that takes the id of a table and empty its children
 function emptyTable(tableId) {
     $('#' + tableId + ' > tbody').empty();
 }
 
+//// KH // function to reset bar graph
 function emptyBarGraph() {
     $("#bar-graph").empty();
 }
@@ -184,7 +178,7 @@ var nationalCarbonEmissionsByYear = [
 
 var nationalPopulationByYear = []; // for 2007 - 2014
 
-// D3 BAR CHART CONSTRUCTOR
+//// KH //  D3 BAR CHART CONSTRUCTOR
 function createBarGraph(data) {
 
     // vars to set the dimensions
@@ -198,15 +192,9 @@ function createBarGraph(data) {
         .attr("height", svgHeight)
         .attr("class", "bar-chart");
 
-    var dataset = data; // this is perhaps a bit redundant, but possibly more useful for more complex datasets
+    var dataset = data.reverse();
     var barPadding = 5;
     var barWidth = (svgWidth / dataset.length);
-
-    // const yScale = d3.scaleLinear()
-    //     .domain([0, d3.max(yearRange, (d) => d[0])])
-    //     .range([h - padding, padding]);
-
-    // const yAxis = d3.axisLeft(yScale);
 
     var barChart = svg.selectAll("rect")
         .data(dataset)
@@ -240,11 +228,66 @@ function createBarGraph(data) {
             return "translate(" + translate + ")";
         })
         .attr("font-family", "monospace")
+        .attr("font-size", ".8rem")
         .attr("fill", "red");
-    // svg.append("g")
-    //     .attr("transform", "translate(" + (w - padding) + ",0)")
-    //     .call(yAxis);
 };
+
+///// KH // REFACTOR TO MERGE DATA RETURNS INTO ONE FUNCTION THAT IS INVOKED THE SAM FROM THE MAP AND THE DROPDOWN
+function dataReturn() {
+    var stateFullName = states[state];
+    emptyArray(stateCarbonEmissionsByYear);
+    emptyArray(statePops)
+    emptyTable('state-data');
+    if ($("#bar-graph").children().length > 0) {
+        emptyBarGraph();
+    }
+
+    $('#state-name').text(state);
+
+    ///// KH // TABLE DATA VARIABLES
+    var carbonEmission;
+    var year;
+    Object.values(popByYear).map(function (year) {
+        year.map(function (state) {
+            if (state[1] === stateFullName) {
+                // console.log(state[0])
+                statePops.push(state[0])
+            }
+        })
+    })
+
+    var tableRow = function (carbon, year) {
+        var newRow = $("<tr>");
+        var carbonEmissionDom = $("<td>").text(carbon.toFixed(2));
+        var yearPopulation = statePops[year - 2007];
+        yearPopulation = $("<td>").text(parseFloat(yearPopulation).toLocaleString('en'));
+        var popPerCapita = (carbon * 1000000) / (statePops[year - 2007]);
+        popPerCapita = $("<td>").text(popPerCapita.toFixed(2));
+        var yearDom = $("<td>").text(year);
+        newRow.append(yearDom, yearPopulation, carbonEmissionDom, popPerCapita);
+        $("#state-data > tbody").append(newRow);
+    }
+
+    // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
+    var api_key = "08e47fd145ef2607fce2a1442928469e";
+    var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
+
+    $.ajax({
+        url: stateQueryURL,
+        method: "GET"
+    })
+        .then(function (response) {
+            var results = response.series[0].data;
+            $.each(results, function (index, value) {
+                carbonEmission = value[1];
+                year = results[index][0];
+                tableRow(carbonEmission, year);
+                stateCarbonEmissionsByYear.push(value[1]);
+                return index < 7;
+            });
+            createBarGraph(stateCarbonEmissionsByYear);
+        });
+}
 
 // CREATE USA MAP WITH CLICKABLE STATES, CONTAINS EVENT HANDLER THAT TRIGGERS API CALLS
 var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
@@ -255,168 +298,27 @@ var map = new Datamap({ // INITIALIZES THE MAP OF THE USA ON TO THE PAGE
         datamap.svg.selectAll('.datamaps-subunit').on('click', function (geography) {
             state = geography.id;
             // console.log(states[state])
-            var stateFullName = states[state];
-            emptyArray(stateCarbonEmissionsByYear);
-            emptyArray(statePops)
-            emptyTable('state-data');
-            if ($("#bar-graph").children().length > 0) {
-                emptyBarGraph();
-            }
-            // Updates the state name on click in the table header
-            $('#state-name').text(state);
-            // console.log(popByYear)
-            ///// KH // TABLE DATA VARIABLES
-            var carbonEmission;
-            var year;
-            // var statePops = [];
-            Object.values(popByYear).map(function(year){
-                year.map(function(state){
-                    if(state[1] === stateFullName){
-                        // console.log(state[0])
-                        statePops.push(state[0])
-                    }
-
-                })
-            })
-            // console.log(statePops)
-
-            var tableRow = function (carbon, year) {
-                // console.log(statePops, "state pops")
-                // console.log(statePops[year-1])
-                // console.log(year-2006)
-                var newRow = $("<tr>");
-                // var carbonEmissionDom = carbon.toFixed(2)
-                var carbonEmissionDom = $("<td>").text(carbon.toFixed(2));
-                
-                // var yearPopulation = $("<td>").text(statePops[year-2007])
-                var yearPopulation = statePops[year-2007];
-                //console.log(yearPopulation);
-                yearPopulation = $("<td>").text(parseFloat(yearPopulation).toLocaleString('en'));
-                var popPerCapita = (carbon * 1000000) / (statePops[year-2007]);
-                popPerCapita = $("<td>").text(popPerCapita.toFixed(2));
-                
-                var yearDom = $("<td>").text(year);
-                //console.log(yearPopulation)
-                newRow.append( yearDom, yearPopulation, carbonEmissionDom, popPerCapita  );
-                $("#state-data > tbody").append(newRow);
-            }
-
-            // EIA DOCUMENTATION FOR API QUERY CONSTRUCTION: https://www.eia.gov/opendata/qb.php
-            var api_key = "08e47fd145ef2607fce2a1442928469e";
-            var stateQueryURL = "https://api.eia.gov/series/?api_key=" + api_key + "&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
-
-            //// KGC // API QUERY FOR POPULATION STATISTICS
-            // yearNums.forEach(function (year) {
-            //     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
-            //     $.ajax({
-            //         url: popQueryURL,
-            //         method: "GET"
-            //     }).then(function (response) {
-            //         popByYear[2006 + year] = response[1][0];
-            //         responseData = response;
-            //         // console.log(popQueryURL)
-            //         console.log(popQueryURL, responseData)
-            
-            //     });
-            // })
-
-            $.ajax({
-                url: stateQueryURL,
-                method: "GET"
-            })
-                .then(function (response) {
-                    //console.log(response);
-                    var results = response.series[0].data;
-                    //console.log(response);
-                    // LOOP TO MAKE TABLE ROWS AND PUSH TO STATECARBONEMISSIONSBYYEAR
-                    $.each(results, function (index, value) {
-                        carbonEmission = value[1];
-                        year = results[index][0];
-                        tableRow(carbonEmission, year);
-                        stateCarbonEmissionsByYear.push(value[1]);
-                        return index < 7;
-                    });
-                    createBarGraph(stateCarbonEmissionsByYear);
-                });
-
+            dataReturn();
         });
     }
 });
 
-
-
-
-
 ///// AS // QUERY FUNCTION BASED ON DROP-DOWN SELECTION
-$("#submit-button").on("click", function () {
+$("#submit-button").on("click", function (event) {
     event.preventDefault();
-    state = $("#state").val().trim();
-
-    var queryURL = "https://api.eia.gov/series/?api_key=08e47fd145ef2607fce2a1442928469e&series_id=EMISS.CO2-TOTV-TT-TO-" + state + ".A";
-    var queryURLTwo = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state:*&DATE=9"
-// console.log("begin api call")
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    })
-        .then(function (response) {
-            var results = response.series[0].data;
-            // console.log(results);
-            $.each(results, function (index, value) {
-                // console.log(index + ": " + value);
-                var newRow = $("<tr>");
-                var carbonEmission = $("<td>").text(value[1]);
-                var year = $("<td>").text(results[index][0]);
-                
-                newRow.append(carbonEmission, year);
-                $("tbody").append(newRow);
-            });
-        });
-
-//console.log("before forEach")
-yearNums.forEach(function (year) {
-    var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
-    $.ajax({
-        url: popQueryURL,
-        method: "GET"
-    }).then(function (response) {
-        popByYear[2006 + year] = response[1][0];
-        responseData = response;
-        // console.log(popQueryURL)
-        // console.log(popQueryURL, responseData)
-
-    });
+    entered = $("#state").val().trim();
+    state = abbrState(entered, 'abbr');
+    dataReturn()
 })
-
-
-    $.ajax({
-        url: queryURLTwo,
-        method: "GET"
-    })
-        .then(function (response) {
-            // var results = response.series[0].data;
-            // console.log(response.data);
-            $.each(results, function (index, value) {
-                // console.log(index + ": " + value);
-                var newRow = $("<tr>");
-                var carbonEmission = $("<td>").text(value[1]);
-                var year = $("<td>").text(results[index][0]);
-                newRow.append(carbonEmission, year);
-                $("tbody").append(newRow);
-            });
-        });
-})
-
-
 
 ////// KH // Sets the size of the map responsive to the browser window
 $(window).on('resize', function () {
     map.resize();
 });
 
-
 ////// KGC // POPULATION API QUERY FUNCTION TESTING
 yearNums.forEach(function (year) {
+
     var popQueryURL = "https://api.census.gov/data/2017/pep/population?get=POP,GEONAME&for=state" + "&DATE=" + year;
     $.ajax({
         url: popQueryURL,
@@ -424,8 +326,5 @@ yearNums.forEach(function (year) {
     }).then(function (response) {
         popByYear[year] = response;
         responseData = response;
-        // console.log(popQueryURL)
-        // console.log(popQueryURL, responseData)
     });
-
 })

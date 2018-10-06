@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>D3: A simple packed Bubble Chart</title>
+    <!doctype html>
+    <html lang="en">
+
+    <head>
+        <title>Title</title>
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"
+            integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    </head>
+
+<body>
+    <script type="text/javascript">
+        dataset = {
+            "children": [{
+                    "Name": "Alabama",
+                    "Count": 4777326
+                },
+                {
+                    "Name": "Alaska",
+                    "Count": 711139
+                },
+                {
+                    "Name": "American Samoa",
+                    "Count": 21211
+                },
+                {
+                    "Name": "Arizona",
+                    "Count": 6410979
+                },
+                {
+                    "Name": "Arkansas",
+                    "Count": 2916372
+                },
+                {
+                    "Name": "California",
+                    "Count": 37325068
+                },
+                {
+                    "Name": "Colorado",
+                    "Count": 5042853
+                },
+                {
+                    "Name": "Connecticut",
+                    "Count": 3572213
+                },
+                {
+                    "Name": "Delaware",
+                    "Count": 900131
+                },
+                {
+                    "Name": "District Of Columbia",
+                    "Count": 605759
+                },
+                {
+                    "Name": "Federated States Of Micronesia",
+                    "Count": "FM"
+                },
+                {
+                    "Name": "Florida",
+                    "Count": 18885152
+                },
+                {
+                    "Name": "Georgia",
+                    "Count": 9714569
+                },
+                {
+                    "Name": "Guam",
+                    "Count": "GU"
+                },
+                {
+                    "Name": "Hawaii",
+                    "Count": 1362730
+                },
+                {
+                    "Name": "Idaho",
+                    "Count": 1567803
+                },
+                {
+                    "Name": "Illinois",
+                    "Count": 12823860
+                },
+                {
+                    "Name": "Indiana",
+                    "Count": 6485530
+                },
+                {
+                    "Name": "Iowa",
+                    "Count": 3047646
+                },
+                {
+                    "Name": "Kansas",
+                    "Count": 2851183
+                },
+                {
+                    "Name": "Kentucky",
+                    "Count": 4340167
+                },
+                {
+                    "Name": "Louisiana",
+                    "Count": 4529605
+                },
+                {
+                    "Name": "Maine",
+                    "Count": 1329084
+                },
+                {
+                    "Name": "Marshall Islands",
+                    "Count": "MH"
+                },
+                {
+                    "Name": "Maryland",
+                    "Count": 5785496
+                },
+                {
+                    "Name": "Massachusetts",
+                    "Count": 6560595
+                },
+                {
+                    "Name": "Michigan",
+                    "Count": 9897264
+                },
+                {
+                    "Name": "Minnesota",
+                    "Count": 5313081
+                },
+                {
+                    "Name": "Mississippi",
+                    "Count": 2967620
+                },
+                {
+                    "Name": "Missouri",
+                    "Count": 5982413
+                },
+                {
+                    "Name": "Montana",
+                    "Count": 990785
+                },
+                {
+                    "Name": "Nebraska",
+                    "Count": 1827306
+                },
+                {
+                    "Name": "Nevada",
+                    "Count": 2704204
+                },
+                {
+                    "Name": "New Hampshire",
+                    "Count": 1317474
+                },
+                {
+                    "Name": "New Jersey",
+                    "Count": 8793888
+                },
+                {
+                    "Name": "New Mexico",
+                    "Count": 2055287
+                },
+                {
+                    "Name": "New York",
+                    "Count": 19398125
+                },
+                {
+                    "Name": "North Carolina",
+                    "Count": 9544249
+                },
+                {
+                    "Name": "North Dakota",
+                    "Count": 676253
+                },
+                {
+                    "Name": "Northern Mariana Islands",
+                    "Count": "MP"
+                },
+                {
+                    "Name": "Ohio",
+                    "Count": 11533561
+                },
+                {
+                    "Name": "Oklahoma",
+                    "Count": 3749005
+                },
+                {
+                    "Name": "Oregon",
+                    "Count": 3836628
+                },
+                {
+                    "Name": "Palau",
+                    "Count": 12699589
+                },
+                {
+                    "Name": "Pennsylvania",
+                    "Count": 12699589
+                },
+                {
+                    "Name": "Puerto Rico",
+                    "Count": 3716727
+                },
+                {
+                    "Name": "Rhode Island",
+                    "Count": 1052471
+                },
+                {
+                    "Name": "South Carolina",
+                    "Count": 4630351
+                },
+                {
+                    "Name": "South Dakota",
+                    "Count": 815871
+                },
+                {
+                    "Name": "Tennessee",
+                    "Count": 6353226
+                },
+                {
+                    "Name": "Texas",
+                    "Count": 25208897
+                },
+                {
+                    "Name": "Utah",
+                    "Count": 2766233
+                },
+                {
+                    "Name": "Vermont",
+                    "Count": 625498
+                },
+                {
+                    "Name": "Virgin Islands",
+                    "Count": "VI"
+                },
+                {
+                    "Name": "Virginia",
+                    "Count": 8014955
+                },
+                {
+                    "Name": "Washington",
+                    "Count": 6738714
+                },
+                {
+                    "Name": "West Virginia",
+                    "Count": 1850481
+                },
+                {
+                    "Name": "Wisconsin",
+                    "Count": 5687219
+                },
+                {
+                    "Name": "Wyoming",
+                    "Count": 562803
+                }
+            ]
+        };
+
+        var diameter = 600;
+        var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+        var bubble = d3.pack(dataset)
+            .size([diameter, diameter])
+            .padding(1.5);
+
+        var svg = d3.select("body")
+            .append("svg")
+            .attr("width", diameter)
+            .attr("height", diameter)
+            .attr("class", "bubble");
+
+        var nodes = d3.hierarchy(dataset)
+            .sum(function (d) {
+                return d.Count;
+            });
+
+        var node = svg.selectAll(".node")
+            .data(bubble(nodes).descendants())
+            .enter()
+            .filter(function (d) {
+                return !d.children
+            })
+            .append("g")
+            .attr("class", "node")
+            .attr("transform", function (d) {
+                return "translate(" + d.x + "," + d.y + ")";
+            });
+
+        node.append("title")
+            .text(function (d) {
+                return d.Name + ": " + d.Count;
+            });
+
+        node.append("circle")
+            .attr("r", function (d) {
+                return d.r;
+            })
+            .style("fill", function (d, i) {
+                return color(i);
+            });
+
+        node.append("text")
+            .attr("dy", ".2em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return d.data.Name.substring(0, d.r / 3);
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", function (d) {
+                return d.r / 5;
+            })
+            .attr("fill", "white");
+
+        node.append("text")
+            .attr("dy", "1.3em")
+            .style("text-anchor", "middle")
+            .text(function (d) {
+                return d.data.Count;
+            })
+            .attr("font-family", "Gill Sans", "Gill Sans MT")
+            .attr("font-size", function (d) {
+                return d.r / 5;
+            })
+            .attr("fill", "white");
+
+        d3.select(self.frameElement)
+            .style("height", diameter + "px");
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
